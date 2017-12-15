@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -43,4 +45,11 @@ public class PurchaseRequestController {
 		}
 		return msg;	
 	}		
+	
+	@PostMapping(path="/Add") 
+	public @ResponseBody PurchaseRequest addNewPurchaseRequest (@RequestBody PurchaseRequest purchaseRequest) {     
+        purchaseRequestRepository.save(purchaseRequest);
+        System.out.println("PurchaseRequest saved:  "+purchaseRequest);
+        return purchaseRequest;
+    }	
 }

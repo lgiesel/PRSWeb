@@ -57,4 +57,11 @@ public class UserController {
         System.out.println("User saved:  "+user);
         return user;
     }	
+	
+	@GetMapping(path="/Authenticate") // Map ONLY GET Requests
+	public @ResponseBody User authenticate (@RequestParam String username, @RequestParam String pwd) {
+
+		User u = userRepository.findByUsernameAndPassword(username, pwd);
+		return u;
+	}
 }

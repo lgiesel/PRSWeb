@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -46,4 +48,25 @@ public class PurchaseRequestLineItemController {
 		}
 		return msg;	
 	}		
+	
+	@PostMapping(path="/Add") 
+	public @ResponseBody PurchaseRequestLineItem addNewPurchaseRequestLineItem (@RequestBody PurchaseRequestLineItem purchaseRequestLineItem) {     
+        purchaseRequestLineItemRepository.save(purchaseRequestLineItem);
+        System.out.println("PurchaseRequestLineItem saved:  "+purchaseRequestLineItem);
+        return purchaseRequestLineItem;
+    }	
+	
+//	@GetMapping(path="/GetPRLI")
+//	public @ResponseBody Iterable<PurchaseRequestLineItem> getPurchaseRequestLineItemByPRId (@RequestParam int prid) {
+//				
+//		PurchaseRequestLineItem prLI = purchaseRequestLineItemRepository.findAllLineItemsByPRId(prid);		
+//		return prLI;
+//	}
+
+//	@GetMapping(path="/PRLI")
+//	public @ResponseBody PurchaseRequestLineItem getPurchaseRequestLineItemByUnAndPwd (@RequestParam int prID) {		
+//		PurchaseRequestLineItem u = PurchaseRequestLineItemRepository.findAll(prID);		
+//		return u;
+//	}	
+		
 }

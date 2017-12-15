@@ -35,31 +35,31 @@ public class PurchaseRequest implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="UserID")
 	private User user;
-	//@JsonProperty("Description")
+	@JsonProperty("Description")
 	private String description;
-//	@JsonProperty("Justification")
+	@JsonProperty("Justification")
 	private String justification;
-//	@JsonProperty("DateNeeded")
+	@JsonProperty("DateNeeded")
 	@Column(name="dateneeded") //Make variable all lowercase because camel case JPA puts a space btween words; it is NOT the DB col name ; joincolumnn is DB name
 	private Timestamp dateNeeded;
-//	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")	
-//	@JsonProperty("DeliveryMode")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")	
+	@JsonProperty("DeliveryMode")
 	@Column(name="deliverymode")
 	private String deliveryMode;
 	@ManyToOne
 	@JoinColumn(name="statusid")
-	//@JsonProperty("StatusID")
+//	@JsonProperty("StatusID")
 	private Status status;
-	//@JsonProperty("Total")
+	@JsonProperty("Total")
 	private double total;
-	//@JsonProperty("SubmittedDate")
+	@JsonProperty("SubmittedDate")
 	@Column(name="submitteddate")
-//	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")	
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")	
 	private Timestamp submittedDate;
-	//@JsonProperty("ReasonForRejection")
+	@JsonProperty("ReasonForRejection")
 //	@Column(name="reasonforrejection")
 	private String reasonForRejection;
-	//@JsonProperty("UpdatedByUser")
+	@JsonProperty("UpdatedByUser")
 //	@Column(name="updatedbyuser")
 	private int updatedByUser;
 	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL) 
@@ -78,7 +78,7 @@ public class PurchaseRequest implements Serializable {
 		submittedDate = null;
 		reasonForRejection = "";
 		updatedByUser = 1;
-//		prli = new ArrayList<PurchaseRequestLineItem>(); //Do NOT need bcuz PR can exist wo line items		
+		prli = new ArrayList<PurchaseRequestLineItem>(); 		
 	}
 		
 	public PurchaseRequest(int id, User user, String description, String justification, Timestamp dateNeeded,
