@@ -1,5 +1,7 @@
 package prs.web;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
@@ -12,10 +14,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import prs.domain.status.Status;
 import prs.domain.status.StatusRepository;
+import prs.util.PRSMaintenanceReturn;
 
 @Controller
 @RequestMapping(path="/Statuses") 
-public class StatusController {
+public class StatusController extends BaseController {
 	
 	@Autowired
 	private StatusRepository statusRepository;	
@@ -26,32 +29,44 @@ public class StatusController {
 	}		
 	
 	@GetMapping(path="/Get")
-	public @ResponseBody Status getStatusById (@RequestParam int id) {
-		
-		Status v = statusRepository.findOne(id);		
-		return v;
+	public @ResponseBody List<Status> getStatus (@RequestParam int id) {
+		Status s = statusRepository.findOne(id);		
+		return getReturnArray(s);
 	}	
 
-	@GetMapping(path="/Delete")
-	public @ResponseBody String deleteStatusById (@RequestParam int id) {
-		
-		String msg = "";
+	@PostMapping(path="Add")
+	public @ResponseBody PRSMaintenanceReturn addNewStatus(@RequestBody Status status){
 		try {
-			statusRepository.delete(id);
-			msg = "Status " + id+ " deleted";			
-			
-		} catch (EmptyResultDataAccessException exc) {
-			msg = "Status " + id+ " not found; no delete";			
+			statusRepository.save(status);
+			System.out.println("Status added:  "+status);
+		} catch (Exception e) {
+			status = null;
 		}
-		return msg;
-	}				
+		return PRSMaintenanceReturn.getMaintReturn(status);
+	}
 	
-	//#	Paste localhost:8080/Status/Add in browser to add status
-	@PostMapping(path="/Add") // Map ONLY POST Requests
-	public @ResponseBody Status addNewStatus (@RequestBody Status status) {     
-        statusRepository.save(status);
-        System.out.println("Status saved:  "+status);
-        return status;
-    }		
-
+	@PostMapping(path="Update")
+	public @ResponseBody PRSMaintenanceReturn updateStatus(@RequestBody Status status){
+		try {
+			statusRepository.save(status);
+			System.out.println("Status updated:  "+status);
+		} catch (Exception e) {
+			status = null;
+		}
+		return PRSMaintenanceReturn.getMaintReturn(status);
+	}
+	
+	@GetMapping(path="/Delete")
+	public @ResponseBody PRSMaintenanceReturn deleteStatusById (@RequestParam int id) {
+		Status status = null;
+		try {
+			status = statusRepository.findOne(id);
+			statusRepository.delete(status);
+			System.out.println("Status deleted:  "+status);			
+		} catch (Exception e) { //EmptyResultDataAccessException exc) {
+			status = null;
+		}
+		return PRSMaintenanceReturn.getMaintReturn(status);
+	}	
+	
 }

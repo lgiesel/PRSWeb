@@ -21,7 +21,6 @@ public class User {
 //	@Column(name="firstname")	//Remove all of these except for boolean
 	@JsonProperty("FirstName")
 	private String firstName;
-//	@Column(name="lastname")
 	@JsonProperty("LastName")
 	private String lastName;
 	@JsonProperty("Phone")
@@ -34,7 +33,9 @@ public class User {
 	@Column(name="isadmin")	//Keep the boolean Column annotation
 	@JsonProperty("IsAdmin")
 	private boolean admin;
-//	@Column(name="updatedbyuser")
+	@Column(name="isactive")	
+	@JsonProperty("IsActive")
+	private boolean active;
 	@JsonProperty("UpdatedByUser")
 	private int updatedByUser;
 //	@Column(name="datecreated")
@@ -51,11 +52,13 @@ public class User {
 		email = "";
 		reviewer = false;
 		admin = false;
+		active = true;
 		updatedByUser = 1;	
 	}
 			
 	public User(int id, String username, String password, String firstName, String lastName, String phone, String email,
-			boolean reviewer, boolean admin, int updatedByUser) {
+			boolean reviewer, boolean admin, boolean active, 
+			int updatedByUser) {
 		this.id = id;
 		this.username = username;
 		this.password = password;
@@ -65,6 +68,7 @@ public class User {
 		this.email = email;
 		this.reviewer = reviewer;
 		this.admin = admin;
+		this.active = active;
 		this.updatedByUser = updatedByUser;
 	}
 
@@ -139,6 +143,14 @@ public class User {
 	public void setAdmin(boolean admin) {
 		this.admin = admin;
 	}
+	
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}	
 
 	public int getUpdatedByUser() {
 		return updatedByUser;
@@ -152,7 +164,8 @@ public class User {
 	public String toString() {
 		return "User [id=" + id + ", username=" + username + ", password=" + password + ", firstName=" + firstName
 				+ ", lastName=" + lastName + ", phone=" + phone + ", email=" + email + ", reviewer=" + reviewer
-				+ ", admin=" + admin + ", updatedByUser=" + updatedByUser + "]";
+				+ ", admin=" + admin + ", active=" + active +  
+				", updatedByUser=" + updatedByUser + "]";
 	}
 	
 }

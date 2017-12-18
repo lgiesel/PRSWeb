@@ -48,7 +48,6 @@ public class PurchaseRequest implements Serializable {
 	private String deliveryMode;
 	@ManyToOne
 	@JoinColumn(name="statusid")
-//	@JsonProperty("StatusID")
 	private Status status;
 	@JsonProperty("Total")
 	private double total;

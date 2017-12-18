@@ -1,5 +1,8 @@
 package prs.web;
 
+import java.sql.Timestamp;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
@@ -12,10 +15,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import prs.domain.purchaserequest.PurchaseRequest;
 import prs.domain.purchaserequest.PurchaseRequestRepository;
+import prs.util.PRSMaintenanceReturn;
 
 @Controller
 @RequestMapping(path="/PurchaseRequests")
-public class PurchaseRequestController {
+public class PurchaseRequestController extends BaseController {
 	
 	@Autowired
 	private PurchaseRequestRepository purchaseRequestRepository;	
@@ -26,30 +30,46 @@ public class PurchaseRequestController {
 	}		
 	
 	@GetMapping(path="/Get")
-	public @ResponseBody PurchaseRequest getPurchaseRequestById (@RequestParam int id) {
-		
-		PurchaseRequest v = purchaseRequestRepository.findOne(id);		
-		return v;
+	public @ResponseBody List<PurchaseRequest> getPurchaseRequest (@RequestParam int id) {
+		PurchaseRequest v = purchaseRequestRepository.findOne(id);
+		return getReturnArray(v);
+	}
+
+	@PostMapping(path="/Add")
+	public @ResponseBody PRSMaintenanceReturn addNewPurchaseRequest (@RequestBody PurchaseRequest purchaseRequest) {
+		try {
+			Timestamp ts = new Timestamp(System.currentTimeMillis()); //Submit date cannot be null
+			purchaseRequest.setSubmittedDate(ts);			
+			purchaseRequestRepository.save(purchaseRequest);
+			System.out.println("PurchaseRequest added:  "+purchaseRequest);
+		}
+		catch (Exception e) {
+			purchaseRequest = null;
+		}
+		return PRSMaintenanceReturn.getMaintReturn(purchaseRequest);
 	}	
 
-	@GetMapping(path="/Delete")
-	public @ResponseBody String deletePurchaseRequestById (@RequestParam int id) {
-		
-		String msg = "";
+	@PostMapping(path="/Update")
+	public @ResponseBody PRSMaintenanceReturn updatePurchaseRequest (@RequestBody PurchaseRequest purchaseRequest) {
 		try {
-			purchaseRequestRepository.delete(id);
-			msg = "PurchaseRequest " + id+ " deleted";			
-			
-		} catch (EmptyResultDataAccessException exc) {
-			msg = "PurchaseRequest " + id+ " not found; no delete";			
+			purchaseRequestRepository.save(purchaseRequest);
+			System.out.println("PurchaseRequest updated:  "+purchaseRequest);
 		}
-		return msg;	
-	}		
+		catch (Exception e) {
+			purchaseRequest = null;
+		}
+		return PRSMaintenanceReturn.getMaintReturn(purchaseRequest);
+	}	
 	
-	@PostMapping(path="/Add") 
-	public @ResponseBody PurchaseRequest addNewPurchaseRequest (@RequestBody PurchaseRequest purchaseRequest) {     
-        purchaseRequestRepository.save(purchaseRequest);
-        System.out.println("PurchaseRequest saved:  "+purchaseRequest);
-        return purchaseRequest;
-    }	
+	@GetMapping(path="/Delete")
+	public @ResponseBody PRSMaintenanceReturn deletePurchaseRequest (@RequestParam int id) {
+		PurchaseRequest purchaseRequest = null; //purchaseRequestRepository.findOne(id);;
+		try {
+			purchaseRequest = purchaseRequestRepository.findOne(id);
+			purchaseRequestRepository.delete(purchaseRequest);		
+		} catch (Exception e ) {
+			purchaseRequest = null;
+		}
+		return PRSMaintenanceReturn.getMaintReturn(purchaseRequest);
+	}	
 }

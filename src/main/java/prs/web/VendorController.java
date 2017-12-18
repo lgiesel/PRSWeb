@@ -1,5 +1,7 @@
 package prs.web;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
@@ -12,10 +14,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import prs.domain.vendor.Vendor;
 import prs.domain.vendor.VendorRepository;
+import prs.util.PRSMaintenanceReturn;
 
 @Controller
 @RequestMapping(path="/Vendors") 
-public class VendorController {
+public class VendorController extends BaseController {
 	
 	@Autowired
 	private VendorRepository vendorRepository; 		
@@ -25,36 +28,46 @@ public class VendorController {
 		return vendorRepository.findAll(); 
 	}		
 	
-	@GetMapping(path="/Get")
-	public @ResponseBody Vendor getVendorById (@RequestParam int id) {
-		
-		Vendor v = vendorRepository.findOne(id);		
-		return v;
-	}	
+	@GetMapping(path="/Get") // Map ONLY GET Requests
+	public @ResponseBody List<Vendor> getVendor (@RequestParam int id) {
+		Vendor v = vendorRepository.findOne(id);
+		return getReturnArray(v);
+	}
 
-	@GetMapping(path="/Delete")
-	public @ResponseBody String deleteVendorById (@RequestParam int id) {
-		
-		String msg = "";
+	@PostMapping(path="/Add") // Map ONLY GET Requests
+	public @ResponseBody PRSMaintenanceReturn addNewVendor (@RequestBody Vendor vendor) {
 		try {
-			vendorRepository.delete(id);
-			msg = "Vendor " + id+ " deleted";			
-			
-		} catch (EmptyResultDataAccessException exc) {
-			msg = "Vendor " + id+ " not found; no delete";			
+			vendorRepository.save(vendor);
+			System.out.println("Vendor added:  "+vendor);
 		}
-		return msg;
-	}			
+		catch (Exception e) {
+			vendor = null;
+		}
+		return PRSMaintenanceReturn.getMaintReturn(vendor);
+	}
 	
-	@PostMapping(path="/Add") // Map ONLY POST Requests
-	public @ResponseBody Vendor addNewVendor (@RequestBody Vendor vendor) {     
-        vendorRepository.save(vendor);
-        System.out.println("Vendor saved:  "+vendor);
-        return vendor;
-//		NEEDED FOR PR DATES        
-//        Timestamp ts = new Timestamp(System.currentTimeMillis());
-//        user.setDateCreated(ts);
-        //See PRSConsoleSprintBoog in Seans GITHUB to get timestamp example for handling date in CONTROLLERS
-        //Date submitted - set at time of 'submit for review'
-    }
+	@PostMapping(path="/Update") // Map ONLY GET Requests
+	public @ResponseBody PRSMaintenanceReturn updateVendor (@RequestBody Vendor vendor) {
+		try {
+			vendorRepository.save(vendor);
+			System.out.println("Vendor updated:  "+vendor);
+		}
+		catch (Exception e) {
+			vendor = null;
+		}
+		return PRSMaintenanceReturn.getMaintReturn(vendor);
+	}	
+	
+	@GetMapping(path="/Delete")
+	public @ResponseBody PRSMaintenanceReturn deleteVendor (@RequestParam int id) {
+		Vendor vendor = null; //vendorRepository.findOne(id);;
+		try {
+			vendor = vendorRepository.findOne(id);
+			vendorRepository.delete(vendor);
+			System.out.println("Vendor deleted:  "+vendor);			
+		} catch (Exception e ) {//EmptyResultDataAccessException exc) {
+			vendor = null;
+		}
+		return PRSMaintenanceReturn.getMaintReturn(vendor);
+	}	
 }

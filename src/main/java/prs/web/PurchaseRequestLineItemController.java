@@ -1,5 +1,7 @@
 package prs.web;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
@@ -13,10 +15,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import prs.domain.purchaserequest.PurchaseRequest;
 import prs.domain.purchaserequest.PurchaseRequestLineItem;
 import prs.domain.purchaserequest.PurchaseRequestLineItemRepository;
+import prs.domain.vendor.Vendor;
+import prs.util.PRSMaintenanceReturn;
 
 @Controller
 @RequestMapping(path="/PurchaseRequestLineItems")
-public class PurchaseRequestLineItemController {
+public class PurchaseRequestLineItemController extends BaseController {
 	
 	@Autowired
 	private PurchaseRequestLineItemRepository purchaseRequestLineItemRepository;	
@@ -26,47 +30,64 @@ public class PurchaseRequestLineItemController {
 		return purchaseRequestLineItemRepository.findAll(); 
 	}		
 	
-	@GetMapping(path="/Get")
-	public @ResponseBody PurchaseRequestLineItem getPurchaseRequestLineItemById (@RequestParam int id) {
-//	public @ResponseBody PurchaseRequestLineItem getPurchaseRequestLineItemById (@RequestParam PurchaseRequest pr) {
-				
-		PurchaseRequestLineItem v = purchaseRequestLineItemRepository.findOne(id);		
-		return v;
-	}	
+//	@GetMapping(path="/Get")
+//	public @ResponseBody PurchaseRequestLineItem getPurchaseRequestLineItemById (@RequestParam int id) {
+////	public @ResponseBody PurchaseRequestLineItem getPurchaseRequestLineItemById (@RequestParam PurchaseRequest pr) {
+//				
+//		PurchaseRequestLineItem v = purchaseRequestLineItemRepository.findOne(id);		
+//		return v;
+//	}	
+
+	@GetMapping(path="/Get") // Map ONLY GET Requests
+	public @ResponseBody List<PurchaseRequestLineItem> getPurchaseRequestLineItem (@RequestParam int id) {
+		PurchaseRequestLineItem v = purchaseRequestLineItemRepository.findOne(id);
+		return getReturnArray(v);
+	}
+	
+//	@PostMapping(path="/Add") 
+//	public @ResponseBody PurchaseRequestLineItem addNewPurchaseRequestLineItem (@RequestBody PurchaseRequestLineItem purchaseRequestLineItem) {     
+//        purchaseRequestLineItemRepository.save(purchaseRequestLineItem);
+//        System.out.println("PurchaseRequestLineItem saved:  "+purchaseRequestLineItem);
+//        return purchaseRequestLineItem;
+//    }	
+
+	@PostMapping(path="/Add")
+	public @ResponseBody PRSMaintenanceReturn addNewPurchaseRequestLineItem (@RequestBody PurchaseRequestLineItem purchaseRequestLI) {
+		try {
+			purchaseRequestLineItemRepository.save(purchaseRequestLI);
+//			System.out.println("PurchaseRequestLineItem added:  "+purchaseRequestLI);
+		}
+		catch (Exception e) {
+			purchaseRequestLI = null;
+		}
+		return PRSMaintenanceReturn.getMaintReturn(purchaseRequestLI);
+	}
+
+	@PostMapping(path="/Update")
+	public @ResponseBody PRSMaintenanceReturn updatePurchaseRequestLineItem (@RequestBody PurchaseRequestLineItem purchaseRequestLI) {
+		try {
+			purchaseRequestLI = purchaseRequestLineItemRepository.findOne(purchaseRequestLI.getId());
+			purchaseRequestLineItemRepository.save(purchaseRequestLI);
+			System.out.println("PurchaseRequestLineItem updated:  "+purchaseRequestLI);
+		}
+		catch (Exception e) {
+			purchaseRequestLI = null;
+		}
+		return PRSMaintenanceReturn.getMaintReturn(purchaseRequestLI);
+	}		
 
 	@GetMapping(path="/Delete")
-	public @ResponseBody String deletePurchaseRequestLineItemById (@RequestParam int id) {
-//	public @ResponseBody String deletePurchaseRequestLineItemById (@RequestParam PurchaseRequest pr) {
-		
-		String msg = "";
+	public @ResponseBody PRSMaintenanceReturn deletePurchaseRequestLineItem (@RequestParam int id) {
+		PurchaseRequestLineItem purchaseRequestLI = null; //purchaseRequestLineItemRepository.findOne(id);;
 		try {
-			purchaseRequestLineItemRepository.delete(id);
-			msg = "PurchaseRequestLineItem " + id + " deleted";			
-			
-		} catch (EmptyResultDataAccessException exc) {
-			msg = "PurchaseRequestLineItem " + id + " not found; no delete";			
+			purchaseRequestLI = purchaseRequestLineItemRepository.findOne(id);
+			purchaseRequestLineItemRepository.delete(purchaseRequestLI);
+			System.out.println("PurchaseRequestLineItem deleted:  "+purchaseRequestLI);			
+		} catch (Exception e ) {//EmptyResultDataAccessException exc) {
+			purchaseRequestLI = null;
 		}
-		return msg;	
-	}		
-	
-	@PostMapping(path="/Add") 
-	public @ResponseBody PurchaseRequestLineItem addNewPurchaseRequestLineItem (@RequestBody PurchaseRequestLineItem purchaseRequestLineItem) {     
-        purchaseRequestLineItemRepository.save(purchaseRequestLineItem);
-        System.out.println("PurchaseRequestLineItem saved:  "+purchaseRequestLineItem);
-        return purchaseRequestLineItem;
-    }	
-	
-//	@GetMapping(path="/GetPRLI")
-//	public @ResponseBody Iterable<PurchaseRequestLineItem> getPurchaseRequestLineItemByPRId (@RequestParam int prid) {
-//				
-//		PurchaseRequestLineItem prLI = purchaseRequestLineItemRepository.findAllLineItemsByPRId(prid);		
-//		return prLI;
-//	}
+		return PRSMaintenanceReturn.getMaintReturn(purchaseRequestLI);
+	}	
 
-//	@GetMapping(path="/PRLI")
-//	public @ResponseBody PurchaseRequestLineItem getPurchaseRequestLineItemByUnAndPwd (@RequestParam int prID) {		
-//		PurchaseRequestLineItem u = PurchaseRequestLineItemRepository.findAll(prID);		
-//		return u;
-//	}	
-		
 }
+

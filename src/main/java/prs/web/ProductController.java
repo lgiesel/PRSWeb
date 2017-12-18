@@ -1,5 +1,7 @@
 package prs.web;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
@@ -12,10 +14,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import prs.domain.product.Product;
 import prs.domain.product.ProductRepository;
+import prs.domain.vendor.Vendor;
+import prs.util.PRSMaintenanceReturn;
 
 @Controller
 @RequestMapping(path="/Products")
-public class ProductController {
+public class ProductController extends BaseController {
 	
 	@Autowired
 	private ProductRepository productRepository;
@@ -24,32 +28,44 @@ public class ProductController {
 	public @ResponseBody Iterable<Product> getAllProducts() {
 		return productRepository.findAll(); 
 	}		
-	
-	@GetMapping(path="/Get")
-	public @ResponseBody Product getProductById (@RequestParam int id) {
-		
-		Product v = productRepository.findOne(id);		
-		return v;
-	}	
 
-	@GetMapping(path="/Delete")
-	public @ResponseBody String deleteProductById (@RequestParam int id) {
-		
-		String msg = "";
-		try {
-			productRepository.delete(id);
-			msg = "Product " + id+ " deleted";			
-			
-		} catch (EmptyResultDataAccessException exc) {
-			msg = "Product " + id+ " not found; no delete";			
-		}
-		return msg;	
-	}	
-	
+	@GetMapping(path="/Get") 
+	public @ResponseBody List<Product> getProduct (@RequestParam int id) {
+		Product p = productRepository.findOne(id);
+		return getReturnArray(p);
+	}
+
 	@PostMapping(path="/Add") 
-	public @ResponseBody Product addNewProduct (@RequestBody Product product) {     
-        productRepository.save(product);
-        System.out.println("Product saved:  "+product);
-        return product;
-    }	
+	public @ResponseBody PRSMaintenanceReturn addNewProduct (@RequestBody Product product) {     
+		try {
+			productRepository.save(product);
+			System.out.println("Product added:  "+product);
+		} catch (Exception e) {
+			product = null;
+		}
+        return PRSMaintenanceReturn.getMaintReturn(product);
+    }
+
+	@PostMapping(path="/Update") 
+	public @ResponseBody PRSMaintenanceReturn updateProduct (@RequestBody Product product) {     
+		try {
+			productRepository.save(product);
+			System.out.println("Product updated:  "+product);
+		} catch (Exception e) {
+			product = null;
+		}
+        return PRSMaintenanceReturn.getMaintReturn(product);
+    }
+	
+	@GetMapping(path="/Delete")
+	public @ResponseBody PRSMaintenanceReturn deleteProduct (@RequestParam int id) {
+		Product product = null;
+		try {
+			product = productRepository.findOne(id);
+			productRepository.delete(product);
+		} catch (Exception e) {//EmptyResultDataAccessException exc) {
+			product = null;
+		}
+		return PRSMaintenanceReturn.getMaintReturn(product);	
+	}	
 }

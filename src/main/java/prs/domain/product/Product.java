@@ -20,8 +20,8 @@ public class Product {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 	@ManyToOne
-//	@JoinColumn(name="VendorID")	//vendorid matches column in DB table
-	@JoinColumn(name="vendorID")	//vendorid matches column in DB table
+//	@JoinColumn(name="vendorID")	
+	@JoinColumn(name="vendorid")	//vendorid matches column in DB table
 	private Vendor vendor;
 	@Column(name="partnumber")
 	@JsonProperty("PartNumber")
