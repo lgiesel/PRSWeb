@@ -1,99 +1,67 @@
 package prs.domain.purchaserequest;
 
-import java.io.Serializable;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
+//import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-//import prs.domain.purchaserequest.PurchaseRequestLineItem;
-import prs.domain.status.Status;
-import prs.domain.user.User;
 
 @Entity
-@Table(name="purchaserequest")
-public class PurchaseRequest implements Serializable {
+public class PurchaseRequest {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	@ManyToOne
-	@JoinColumn(name="UserID")
-	private User user;
-	@JsonProperty("Description")
+	private int userID;
 	private String description;
-	@JsonProperty("Justification")
 	private String justification;
-	@JsonProperty("DateNeeded")
-	@Column(name="dateneeded") //Make variable all lowercase because camel case JPA puts a space btween words; it is NOT the DB col name ; joincolumnn is DB name
-	private Timestamp dateNeeded;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")	
-	@JsonProperty("DeliveryMode")
-	@Column(name="deliverymode")
+	private Timestamp dateNeeded;
 	private String deliveryMode;
-	@ManyToOne
-	@JoinColumn(name="statusid")
-	private Status status;
-	@JsonProperty("Total")
+	private int statusID;
 	private double total;
-	@JsonProperty("SubmittedDate")
-	@Column(name="submitteddate")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")	
 	private Timestamp submittedDate;
-	@JsonProperty("ReasonForRejection")
-//	@Column(name="reasonforrejection")
-	private String reasonForRejection;
-	@JsonProperty("UpdatedByUser")
-//	@Column(name="updatedbyuser")
-	private int updatedByUser;
-	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL) 
-	@JoinColumn(name="purchaserequestid")
-	private List<PurchaseRequestLineItem> prli;
-	
+//	private String reasonForRejection;
+//	private int updatedByUser;
+
 	public PurchaseRequest() {
 		id = 0;
-		user = new User();
+		userID = 0;
 		description = "";
 		justification = "";
-		dateNeeded = Timestamp.valueOf(LocalDateTime.now());;
+//		dateNeeded = Timestamp.valueOf(LocalDateTime.now());
+		dateNeeded = new Timestamp(System.currentTimeMillis());
 		deliveryMode = "";
-		status = new Status();
+		statusID = 0;
 		total = 0.0;
-		submittedDate = null;
-		reasonForRejection = "";
-		updatedByUser = 1;
-		prli = new ArrayList<PurchaseRequestLineItem>(); 		
+		submittedDate = new Timestamp(System.currentTimeMillis());
+//		reasonForRejection = "";
+//		updatedByUser = 1;
 	}
 		
-	public PurchaseRequest(int id, User user, String description, String justification, Timestamp dateNeeded,
-			String deliveryMode, Status status, double total, Timestamp submittedDate, String reasonForRejection,
-			int updatedByUser) {
+	public PurchaseRequest(int id, int userID, String description, String justification, Timestamp dateNeeded,
+			String deliveryMode, int statusID, double total, Timestamp submittedDate//, String reasonForRejection,
+			//int updatedByUser
+			) {
 		this.id = id;
-		this.user = user;
+		this.userID = userID;
 		this.description = description;
 		this.justification = justification;
 		this.dateNeeded = dateNeeded;
 		this.deliveryMode = deliveryMode;
-		this.status = status;
+		this.statusID = statusID;
 		this.total = total;
 		this.submittedDate = submittedDate;
-		this.reasonForRejection = reasonForRejection;
-		this.updatedByUser = updatedByUser;
+//		this.reasonForRejection = reasonForRejection;
+//		this.updatedByUser = updatedByUser;
 	}
 
 	public int getId() {
@@ -104,12 +72,12 @@ public class PurchaseRequest implements Serializable {
 		this.id = id;
 	}
 
-	public User getUser() {
-		return user;
+	public int getUserID() {
+		return userID;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setUserID(int userID) {
+		this.userID = userID;
 	}
 
 	public String getDescription() {
@@ -144,12 +112,12 @@ public class PurchaseRequest implements Serializable {
 		this.deliveryMode = deliveryMode;
 	}
 
-	public Status getStatus() {
-		return status;
+	public int getStatusID() {
+		return statusID;
 	}
 
-	public void setStatus(Status status) {
-		this.status = status;
+	public void setStatusID(int statusID) {
+		this.statusID = statusID;
 	}
 
 	public double getTotal() {
@@ -168,47 +136,34 @@ public class PurchaseRequest implements Serializable {
 		this.submittedDate = submittedDate;
 	}
 
-	public String getReasonForRejection() {
-		return reasonForRejection;
-	}
-
-	public void setReasonForRejection(String reasonForRejection) {
-		this.reasonForRejection = reasonForRejection;
-	}
-
-	public int getUpdatedByUser() {
-		return updatedByUser;
-	}
-
-	public void setUpdatedByUser(int updatedByUser) {
-		this.updatedByUser = updatedByUser;
-	}
-
-	public List<PurchaseRequestLineItem> getPrli() {
-			return prli;
-	}
-
-	public void setPrli(ArrayList<PurchaseRequestLineItem> prli) {
-		this.prli = prli;
-	}
-	
-//	public void addPurchaseRequestLineItem(PurchaseRequestLineItem prli) {
-//		this.prli.add(prli);
+//	public String getReasonForRejection() {
+//		return reasonForRejection;
+//	}
+//
+//	public void setReasonForRejection(String reasonForRejection) {
+//		this.reasonForRejection = reasonForRejection;
+//	}
+//
+//	public int getUpdatedByUser() {
+//		return updatedByUser;
+//	}
+//
+//	public void setUpdatedByUser(int updatedByUser) {
+//		this.updatedByUser = updatedByUser;
 //	}
 
 	@Override
 	public String toString() {
 		return "\nPurchaseRequest= [" + 
-	              "\nid=" + id +  ", description=" + description + ", " + 
-	              "justification=" + justification + 
+	              "\nid=" + id +  ", userID=" + userID + 
+	              ", description=" + description + ", " + 
+	              ", justification=" + justification + 
 	              ", dateNeeded= " + dateNeeded +
 	              ", deliveryMode=" + deliveryMode +  
+	              ", statusID=" + statusID + 
 	              ", total=" + total + 
 	              ", submittedDate=" + submittedDate +
-	              ", reasonForRejection=" + reasonForRejection +
-	              ",\n" + getUser() +  
-	              ",\n" + getStatus() + 
-	              "\nLineItems: [" +  prli +"\n" + 
+//	              ", reasonForRejection=" + reasonForRejection +
 	              "]\n";
 	}	
 

@@ -43,13 +43,6 @@ public class PurchaseRequestLineItemController extends BaseController {
 		PurchaseRequestLineItem v = purchaseRequestLineItemRepository.findOne(id);
 		return getReturnArray(v);
 	}
-	
-//	@PostMapping(path="/Add") 
-//	public @ResponseBody PurchaseRequestLineItem addNewPurchaseRequestLineItem (@RequestBody PurchaseRequestLineItem purchaseRequestLineItem) {     
-//        purchaseRequestLineItemRepository.save(purchaseRequestLineItem);
-//        System.out.println("PurchaseRequestLineItem saved:  "+purchaseRequestLineItem);
-//        return purchaseRequestLineItem;
-//    }	
 
 	@PostMapping(path="/Add")
 	public @ResponseBody PRSMaintenanceReturn addNewPurchaseRequestLineItem (@RequestBody PurchaseRequestLineItem purchaseRequestLI) {
@@ -66,7 +59,6 @@ public class PurchaseRequestLineItemController extends BaseController {
 	@PostMapping(path="/Update")
 	public @ResponseBody PRSMaintenanceReturn updatePurchaseRequestLineItem (@RequestBody PurchaseRequestLineItem purchaseRequestLI) {
 		try {
-			purchaseRequestLI = purchaseRequestLineItemRepository.findOne(purchaseRequestLI.getId());
 			purchaseRequestLineItemRepository.save(purchaseRequestLI);
 			System.out.println("PurchaseRequestLineItem updated:  "+purchaseRequestLI);
 		}
@@ -78,15 +70,14 @@ public class PurchaseRequestLineItemController extends BaseController {
 
 	@GetMapping(path="/Delete")
 	public @ResponseBody PRSMaintenanceReturn deletePurchaseRequestLineItem (@RequestParam int id) {
-		PurchaseRequestLineItem purchaseRequestLI = null; //purchaseRequestLineItemRepository.findOne(id);;
+		PurchaseRequestLineItem purchaseRequestLineItem = purchaseRequestLineItemRepository.findOne(id);
 		try {
-			purchaseRequestLI = purchaseRequestLineItemRepository.findOne(id);
-			purchaseRequestLineItemRepository.delete(purchaseRequestLI);
-			System.out.println("PurchaseRequestLineItem deleted:  "+purchaseRequestLI);			
-		} catch (Exception e ) {//EmptyResultDataAccessException exc) {
-			purchaseRequestLI = null;
+			purchaseRequestLineItemRepository.delete(purchaseRequestLineItem);
+			System.out.println("PurchaseRequestLineItem updated:  "+purchaseRequestLineItem);
+		} catch (Exception e ) {
+			purchaseRequestLineItem = null;
 		}
-		return PRSMaintenanceReturn.getMaintReturn(purchaseRequestLI);
+		return PRSMaintenanceReturn.getMaintReturn(purchaseRequestLineItem);
 	}	
 
 }

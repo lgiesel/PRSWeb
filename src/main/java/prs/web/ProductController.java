@@ -59,10 +59,10 @@ public class ProductController extends BaseController {
 	
 	@GetMapping(path="/Delete")
 	public @ResponseBody PRSMaintenanceReturn deleteProduct (@RequestParam int id) {
-		Product product = null;
+		Product product = productRepository.findOne(id);
 		try {
-			product = productRepository.findOne(id);
 			productRepository.delete(product);
+//			System.out.println("Product deleted:  "+product);
 		} catch (Exception e) {//EmptyResultDataAccessException exc) {
 			product = null;
 		}

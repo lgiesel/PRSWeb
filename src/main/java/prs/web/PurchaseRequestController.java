@@ -72,4 +72,10 @@ public class PurchaseRequestController extends BaseController {
 		}
 		return PRSMaintenanceReturn.getMaintReturn(purchaseRequest);
 	}	
+	
+//	@GetMapping(path="/MyPRs")
+//	public @ResponseBody List<PurchaseRequest> getMyPRs (@RequestParam int id) {
+//		PurchaseRequest pr = purchaseRequestRepository.findAllByPurchaseRequestId(id);
+//		return getReturnArray(pr);
+//	}	
 }

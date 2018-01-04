@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 public class User {
-	
+	//REMOVE JSON PROPERTIES !!!!!!!!!!!!!!
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;

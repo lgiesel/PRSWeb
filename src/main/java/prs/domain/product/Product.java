@@ -19,26 +19,16 @@ public class Product {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-	@ManyToOne
-//	@JoinColumn(name="vendorID")	
-	@JoinColumn(name="vendorid")	//vendorid matches column in DB table
-	private Vendor vendor;
-	@Column(name="partnumber")
-	@JsonProperty("PartNumber")
+	private int vendorID;
     private String partNumber;
-	@JsonProperty("Name")
     private String name;
-	@JsonProperty("Price")
     private double price;
-	@JsonProperty("Unit")
     private String unit;
-	@Column(name="photopath")
-	@JsonProperty("PhotoPath")
     private String photoPath;
 	
 	public Product() {
 		id = 0;
-		vendor = new Vendor();
+		vendorID = 0;
 		partNumber = "";
 		name = "";
 		price = 0.0;
@@ -46,9 +36,9 @@ public class Product {
 		photoPath = "";		
 	}			
 	
-	public Product(int id, Vendor vendor, String partNumber, String name, double price, String unit, String photoPath) {
+	public Product(int id, int vendorID, String partNumber, String name, double price, String unit, String photoPath) {
 		this.id = id;
-		this.vendor = vendor;
+		this.vendorID = vendorID;
 		this.partNumber = partNumber;
 		this.name = name;
 		this.price = price;
@@ -64,12 +54,12 @@ public class Product {
 		this.id = id;
 	}
 
-	public Vendor getVendor() {
-		return vendor;
+	public int getVendorID() {
+		return vendorID;
 	}
 
-	public void setVendorID(Vendor vendor) {
-		this.vendor = vendor;
+	public void setVendorID(int vendorID) {
+		this.vendorID = vendorID;
 	}
 
 	public String getPartNumber() {
@@ -114,7 +104,7 @@ public class Product {
 
 	@Override
 	public String toString() {
-		return "Product [id=" + id + ", vendor=[" + vendor + "], partNumber=" + partNumber + ", name=" + name
+		return "Product [id=" + id + ", vendorID=" + vendorID + "], partNumber=" + partNumber + ", name=" + name
 				+ ", price=" + price + ", unit=" + unit + ", photoPath=" + photoPath + "]";
 	}
    

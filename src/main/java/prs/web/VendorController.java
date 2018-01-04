@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import prs.domain.product.Product;
+import prs.domain.product.ProductRepository;
 import prs.domain.vendor.Vendor;
 import prs.domain.vendor.VendorRepository;
 import prs.util.PRSMaintenanceReturn;
@@ -22,6 +24,9 @@ public class VendorController extends BaseController {
 	
 	@Autowired
 	private VendorRepository vendorRepository; 		
+	
+	@Autowired
+	private ProductRepository productRepository;	
 
 	@GetMapping(path="/List")
 	public @ResponseBody Iterable<Vendor> getAllVendors() {
@@ -60,14 +65,36 @@ public class VendorController extends BaseController {
 	
 	@GetMapping(path="/Delete")
 	public @ResponseBody PRSMaintenanceReturn deleteVendor (@RequestParam int id) {
-		Vendor vendor = null; //vendorRepository.findOne(id);;
+		Vendor vendor = vendorRepository.findOne(id);
 		try {
-			vendor = vendorRepository.findOne(id);
 			vendorRepository.delete(vendor);
 			System.out.println("Vendor deleted:  "+vendor);			
-		} catch (Exception e ) {//EmptyResultDataAccessException exc) {
+		} catch (Exception e ) {
 			vendor = null;
 		}
 		return PRSMaintenanceReturn.getMaintReturn(vendor);
+	}	
+	
+//	@GetMapping(path="/Summary")
+//	public @ResponseBody List<VendorSummary> getVendorSummary(@RequestParam int id) {
+//		// This returns a JSON or XML with the users
+//		VendorSummary vs = new VendorSummary();
+//		Vendor vendor = vendorRepository.findOne(id);
+//		vs.setVendor(vendor);
+//		List<Product> products = productRepository.findAllByVendorID(vendor.getId());
+//		vs.setProducts(products);
+//		return getReturnArray(vs);
+//	}	
+	
+	/*
+	 * This method tests a 'find' method that excludes the id passed in.
+	 * Hint:  this would be useful for finding PRs NOT assigned to the 
+	 * 			id passed in.
+	 */
+	@GetMapping(path="/GetNot")
+	public @ResponseBody List<Product> getVendorNot(@RequestParam int id) {
+		// This returns a JSON or XML with the users
+		List<Product> products = productRepository.findAllByVendorIDNot(id);
+		return products;
 	}	
 }
