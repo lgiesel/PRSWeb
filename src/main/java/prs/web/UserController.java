@@ -15,8 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import prs.domain.user.User;
 import prs.domain.user.UserRepository;
 import prs.util.PRSMaintenanceReturn;
+//replaces the enable cross origin in browser
 
-@CrossOrigin	//replaces the enable cross origin in browser
+@CrossOrigin	
 @Controller
 @RequestMapping(path="/Users")
 public class UserController extends BaseController {
