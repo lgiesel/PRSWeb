@@ -10,6 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -22,15 +24,17 @@ public class PurchaseRequest {
 	private int userID;
 	private String description;
 	private String justification;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")	
+//	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")	
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")	
+//	@Temporal(TemporalType.DATE)	
 	private Timestamp dateNeeded;
 	private String deliveryMode;
 	private int statusID;
 	private double total;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")	
 	private Timestamp submittedDate;
-	private String reasonForRejection;
-	private int updatedByUser;
+//	private String reasonForRejection;
+//	private int updatedByUser;
 
 	public PurchaseRequest() {
 		id = 0;
@@ -43,13 +47,12 @@ public class PurchaseRequest {
 		statusID = 0;
 		total = 0.0;
 		submittedDate = new Timestamp(System.currentTimeMillis());
-		reasonForRejection = "";
-		updatedByUser = 1;
+//		reasonForRejection = "";
+//		updatedByUser = 1;
 	}
 		
 	public PurchaseRequest(int id, int userID, String description, String justification, Timestamp dateNeeded,
-			String deliveryMode, int statusID, double total, Timestamp submittedDate, String reasonForRejection,
-			int updatedByUser) {
+			String deliveryMode, int statusID, double total, Timestamp submittedDate) {
 		this.id = id;
 		this.userID = userID;
 		this.description = description;
@@ -59,8 +62,6 @@ public class PurchaseRequest {
 		this.statusID = statusID;
 		this.total = total;
 		this.submittedDate = submittedDate;
-		this.reasonForRejection = reasonForRejection;
-		this.updatedByUser = updatedByUser;
 	}
 
 	public int getId() {
@@ -135,21 +136,21 @@ public class PurchaseRequest {
 		this.submittedDate = submittedDate;
 	}
 
-	public String getReasonForRejection() {
-		return reasonForRejection;
-	}
+//	public String getReasonForRejection() {
+//		return reasonForRejection;
+//	}
 
-	public void setReasonForRejection(String reasonForRejection) {
-		this.reasonForRejection = reasonForRejection;
-	}
+//	public void setReasonForRejection(String reasonForRejection) {
+//		this.reasonForRejection = reasonForRejection;
+//	}
 
-	public int getUpdatedByUser() {
-		return updatedByUser;
-	}
+//	public int getUpdatedByUser() {
+//		return updatedByUser;
+//	}
 
-	public void setUpdatedByUser(int updatedByUser) {
-		this.updatedByUser = updatedByUser;
-	}
+//	public void setUpdatedByUser(int updatedByUser) {
+//		this.updatedByUser = updatedByUser;
+//	}
 
 	@Override
 	public String toString() {
@@ -162,8 +163,8 @@ public class PurchaseRequest {
 	              ", statusID=" + statusID + 
 	              ", total=" + total + 
 	              ", submittedDate=" + submittedDate +
-	              ", reasonForRejection=" + reasonForRejection +
-	              ", updatedByUser=" + updatedByUser +
+//	              ", reasonForRejection=" + reasonForRejection +
+//	              ", updatedByUser=" + updatedByUser +
 	              "]\n";
 	}	
 
