@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +17,7 @@ import prs.domain.status.Status;
 import prs.domain.status.StatusRepository;
 import prs.util.PRSMaintenanceReturn;
 
+@CrossOrigin
 @Controller
 @RequestMapping(path="/Statuses") 
 public class StatusController extends BaseController {
@@ -54,8 +56,8 @@ public class StatusController extends BaseController {
 			status = null;
 		}
 		return PRSMaintenanceReturn.getMaintReturn(status);
-	}
-	
+	}	
+		
 	@GetMapping(path="/Delete")
 	public @ResponseBody PRSMaintenanceReturn deleteStatusById (@RequestParam int id) {
 		Status status = null;

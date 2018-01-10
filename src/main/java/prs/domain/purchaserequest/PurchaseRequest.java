@@ -30,6 +30,7 @@ public class PurchaseRequest {
 	private Timestamp dateNeeded;
 	private String deliveryMode;
 	private int statusID;
+//	private int statusDesc; //SEE SEAN'S CODE FOR EXAMPLE OF ADDING STATUSDEC TO POJO USING @TRANSIENT (NOT IN DB) AND THE @JSON STRING TO INCLUDE THIS FIELD IN JSON	
 	private double total;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")	
 	private Timestamp submittedDate;
