@@ -24,10 +24,10 @@ import prs.util.PRSMaintenanceReturn;
 @Controller
 @RequestMapping(path="/PurchaseRequests")
 public class PurchaseRequestController extends BaseController {
-	private static final String NEW_STATUS = "New";
-	private static final String SUBMIT_STATUS = "Reviewed";
-	private static final String APPROVED_STATUS = "Approved";
-	private static final String REJECTED_STATUS = "Rejected";
+	private static final String NEW_STATUS = "NEW";
+	private static final String SUBMIT_STATUS = "REVIEW";
+	private static final String APPROVED_STATUS = "APPROVED";
+	private static final String REJECTED_STATUS = "REJECTED";
 	
 	@Autowired
 	private PurchaseRequestRepository purchaseRequestRepository;	
@@ -65,9 +65,9 @@ public class PurchaseRequestController extends BaseController {
 		Status status = null;
 		try {
 			if (purchaseRequest.getTotal() <= 50) {				
-				status = statusRepository.findStatusByDescription("Approved");
+				status = statusRepository.findStatusByDescription("APPROVED");
 			} else {
-				status = statusRepository.findStatusByDescription("Reviewed");				
+				status = statusRepository.findStatusByDescription("REVIEWS");				
 			}
 //			getReturnArray(status);
 			purchaseRequest.setStatusID(status.getId());
@@ -110,4 +110,15 @@ public class PurchaseRequestController extends BaseController {
 //		PurchaseRequest pr = purchaseRequestRepository.findAllByPurchaseRequestId(id);
 //		return getReturnArray(pr);
 //	}	
+	
+	/*
+	 * This method tests a 'find' method that excludes the id passed in.
+	 * Hint:  this would be useful for finding PRs NOT assigned to the 
+	 * 			id passed in.
+	 */
+	@GetMapping(path="/GetNot")
+	public @ResponseBody List<PurchaseRequest> getPRNot(@RequestParam int id) {
+		List<PurchaseRequest> prs = purchaseRequestRepository.findAllByUserIDNot(id);
+		return prs;
+	}	
 }
