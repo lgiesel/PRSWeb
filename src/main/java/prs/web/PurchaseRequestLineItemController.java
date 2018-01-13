@@ -20,10 +20,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import prs.domain.product.Product;
+import prs.domain.product.ProductRepository;
 import prs.domain.purchaserequest.PurchaseRequest;
 import prs.domain.purchaserequest.PurchaseRequestLineItem;
 import prs.domain.purchaserequest.PurchaseRequestLineItemRepository;
 import prs.domain.purchaserequest.PurchaseRequestRepository;
+import prs.web.PurchaseRequestController;
+
 import prs.domain.vendor.Vendor;
 import prs.util.PRSMaintenanceReturn;
 //import util.DBUtil;
@@ -39,6 +42,9 @@ public class PurchaseRequestLineItemController extends BaseController {
 	@Autowired
 	private PurchaseRequestLineItemRepository purchaseRequestLineItemRepository;	
 
+	@Autowired
+	private ProductRepository productRepository;
+	
 	@GetMapping(path="/List")
 	public @ResponseBody Iterable<PurchaseRequestLineItem> getAllPurchaseRequestLineItems() {
 		return purchaseRequestLineItemRepository.findAll(); 
@@ -62,7 +68,7 @@ public class PurchaseRequestLineItemController extends BaseController {
 	public @ResponseBody PRSMaintenanceReturn addNewPurchaseRequestLineItem (@RequestBody PurchaseRequestLineItem purchaseRequestLI) {
 		try {
 			purchaseRequestLineItemRepository.save(purchaseRequestLI);			
-//			System.out.println("PurchaseRequestLineItem added:  "+purchaseRequestLI);
+			recalculatePRTotal(purchaseRequestLI);
 		}
 		catch (Exception e) {
 			purchaseRequestLI = null;
@@ -75,8 +81,8 @@ public class PurchaseRequestLineItemController extends BaseController {
 				
 		try {
 			purchaseRequestLineItemRepository.save(purchaseRequestLI);
-			recalculatePRTotal(purchaseRequestLI.getPurchaseRequestID());
 			System.out.println("PurchaseRequestLineItem updated:  "+purchaseRequestLI);
+			recalculatePRTotal(purchaseRequestLI);
 		}
 		catch (Exception e) {
 			purchaseRequestLI = null;
@@ -90,45 +96,27 @@ public class PurchaseRequestLineItemController extends BaseController {
 		try {
 			purchaseRequestLineItemRepository.delete(purchaseRequestLineItem);
 			System.out.println("PurchaseRequestLineItem updated:  "+purchaseRequestLineItem);
+			recalculatePRTotal(purchaseRequestLineItem);
 		} catch (Exception e ) {
 			purchaseRequestLineItem = null;
 		}
 		return PRSMaintenanceReturn.getMaintReturn(purchaseRequestLineItem);
 	}	
 
-	public void recalculatePRTotal (int prID) {
+	public void recalculatePRTotal (PurchaseRequestLineItem prli) {
 		double total = 0.0;
-		PurchaseRequest pr = purchaseRequestRepository.findOne(prID);		
-		List<PurchaseRequestLineItem> prlis = new ArrayList<PurchaseRequestLineItem>();
-		
-		prlis = (List<PurchaseRequestLineItem>) purchaseRequestLineItemRepository.findAll();
-		
+		PurchaseRequest pr = purchaseRequestRepository.findOne(prli.getPurchaseRequestID());
+		List<PurchaseRequestLineItem> prlis = new ArrayList<>();
+		prlis = purchaseRequestLineItemRepository.findAllByPurchaseRequestID(pr.getId());
+				
 		for (PurchaseRequestLineItem li : prlis) {
-			if (li.getPurchaseRequestID() == pr.getId()) {
-				total += li.getQuantity(); //NEED PRICE
-				System.out.println("PRLI ID counted=" + li.getId() + "qty= " + li.getQuantity());				
-			}			
-		}					
-//		pr.setTotal(total);
-		
-		//Call recalc and pass in the PR
-		//Cal prliRep.findAll to get all prlis back
-		//Loop thru prlis returned and find only those that match the PR 
-		//Find price for li product id - getProductID? prli.ProductID
-		//Multiple price x qty for li total only for PR
-		//Update the PR total
-	
-
-		
-//		@GetMapping(path="/Get") 
-//		public @ResponseBody List<Product> getProduct (@RequestParam int id) {
-//			Product p = productRepository.findOne(id);
-//			return getReturnArray(p);
-//		}		
+			Product prod = productRepository.findOne(li.getProductID());
+				total += prod.getPrice() * li.getQuantity();
+		}
+		pr.setTotal(total);				
 		purchaseRequestRepository.save(pr);
+		System.out.println("Total "+total);
 	}
-	
-
 
 }	
 

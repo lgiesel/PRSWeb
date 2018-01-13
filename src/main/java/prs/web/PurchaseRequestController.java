@@ -51,6 +51,8 @@ public class PurchaseRequestController extends BaseController {
 		try {
 			Timestamp ts = new Timestamp(System.currentTimeMillis()); //Submit date cannot be null
 			purchaseRequest.setSubmittedDate(ts);			
+			Status status = statusRepository.findStatusByDescription(NEW_STATUS);
+			purchaseRequest.setStatusID(status.getId());
 			purchaseRequestRepository.save(purchaseRequest);
 			System.out.println("PurchaseRequest added:  "+purchaseRequest);
 		}
@@ -65,11 +67,10 @@ public class PurchaseRequestController extends BaseController {
 		Status status = null;
 		try {
 			if (purchaseRequest.getTotal() <= 50) {				
-				status = statusRepository.findStatusByDescription("APPROVED");
+				status = statusRepository.findStatusByDescription(NEW_STATUS);
 			} else {
-				status = statusRepository.findStatusByDescription("REVIEWS");				
+				status = statusRepository.findStatusByDescription(SUBMIT_STATUS);				
 			}
-//			getReturnArray(status);
 			purchaseRequest.setStatusID(status.getId());
 			
 			purchaseRequestRepository.save(purchaseRequest);
@@ -116,6 +117,7 @@ public class PurchaseRequestController extends BaseController {
 	 * Hint:  this would be useful for finding PRs NOT assigned to the 
 	 * 			id passed in.
 	 */
+	
 	@GetMapping(path="/GetNot")
 	public @ResponseBody List<PurchaseRequest> getPRNot(@RequestParam int id) {
 		List<PurchaseRequest> prs = purchaseRequestRepository.findAllByUserIDNot(id);
