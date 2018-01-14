@@ -67,7 +67,7 @@ public class PurchaseRequestController extends BaseController {
 		Status status = null;
 		try {
 			if (purchaseRequest.getTotal() <= 50) {				
-				status = statusRepository.findStatusByDescription(NEW_STATUS);
+				status = statusRepository.findStatusByDescription(APPROVED_STATUS);
 			} else {
 				status = statusRepository.findStatusByDescription(SUBMIT_STATUS);				
 			}
