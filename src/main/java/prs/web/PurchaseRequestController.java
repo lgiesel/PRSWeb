@@ -123,4 +123,35 @@ public class PurchaseRequestController extends BaseController {
 		List<PurchaseRequest> prs = purchaseRequestRepository.findAllByUserIDNot(id);
 		return prs;
 	}	
+	
+	@PostMapping(path="/Approve")
+	public @ResponseBody PRSMaintenanceReturn approvePurchaseRequest (@RequestBody PurchaseRequest purchaseRequest) {
+		Status status = null;
+		try {		
+			  status = statusRepository.findStatusByDescription(APPROVED_STATUS);
+			  purchaseRequest.setStatusID(status.getId());
+			  purchaseRequestRepository.save(purchaseRequest);
+		      System.out.println("PurchaseRequest updated:  "+purchaseRequest);			
+		}
+		catch (Exception e) {
+			purchaseRequest = null;
+		}
+		return PRSMaintenanceReturn.getMaintReturn(purchaseRequest);
+	}	
+	
+	@PostMapping(path="/Reject")
+	public @ResponseBody PRSMaintenanceReturn rejecttPurchaseRequest (@RequestBody PurchaseRequest purchaseRequest) {
+		Status status = null;
+		try {
+			  status = statusRepository.findStatusByDescription(REJECTED_STATUS);
+			  purchaseRequest.setStatusID(status.getId());
+			  purchaseRequestRepository.save(purchaseRequest);
+		      System.out.println("PurchaseRequest updated:  "+purchaseRequest);			
+		}
+		catch (Exception e) {
+			purchaseRequest = null;
+		}
+		return PRSMaintenanceReturn.getMaintReturn(purchaseRequest);
+	}		
+	
 }
