@@ -70,7 +70,8 @@ CREATE TABLE purchaserequest
   deliverymode		 NVARCHAR(25) 	NOT NULL, 
   statusid			 INT 			NOT NULL,
   total				 DECIMAL(10,2) 	NOT NULL,
-  submitteddate		 DATETIME		NOT NULL, 
+--   submitteddate		 DATETIME		NOT NULL, 
+  submitteddate		 DATETIME, 
   reasonforrejection NVARCHAR(100),
   isactive			 TINYINT(1) 	DEFAULT 1 NOT NULL,
   datecreated		 DATETIME 		DEFAULT CURRENT_TIMESTAMP NOT NULL, 
@@ -122,13 +123,15 @@ INSERT INTO user (ID, UserName, Password, FirstName, LastName, Phone, Email, IsR
    VALUES (1, 'SYSTEM', 'xxxxx', 'System', 'System', '513-561-3717', 'system@test.com', 0, 0,1);
 
 INSERT INTO user (ID, UserName, Password, FirstName, LastName, Phone, Email, IsReviewer, IsAdmin, updatedbyuser) VALUES 
-  (2, 'ADMBONNIE', 'pwd543', 'Bonnie', 'Raitt', '513-561-4363', 'bonnier@test.com', 0, 1, 1),
-  (3, 'RVJAMES', 'pwd543', 'James', 'Taylor', '513-271-1112', 'samt@test.com', 1, 0, 1),
-  (4, 'RQTINA', 'pwd543', 'Tina', 'Turner', '513-828-3216', 'tinat@test.com', 0, 0, 1),
-  (5, 'RQKara', 'pwd543', 'Kara','Danvers','513-271-2706', 'kara@test.com', 0, 0, 1),
-  (6, 'RQClark', 'pwd543', 'Clark','Kent','513-721-8888', 'clark@test.com', 0, 0, 1),
-  (7, 'bmarley', 'iriemon', 'Bob','Marley', '513-222-3333', 'bob@bigdoobie.com', 1, 1, 1),			
-  (8, 'un', 'pwd', 'Cliff','Notes', '513-555-1212', 'cliff@notes.com', 0, 1, 1);	
+  (2, 'ADMBONNIE', 'pwd', 'Bonnie', 'Raitt', '513-561-4363', 'bonnier@test.com', 0, 1, 1),
+  (3, 'RVJAMES', 'pwd', 'James', 'Taylor', '513-271-1112', 'samt@test.com', 1, 0, 1),
+  (4, 'RQTINA', 'pwd', 'Tina', 'Turner', '513-828-3216', 'tinat@test.com', 0, 0, 1),
+  (5, 'RQKara', 'pwd', 'Kara','Danvers','513-271-2706', 'kara@test.com', 0, 0, 1),
+  (6, 'RQClark', 'pwd', 'Clark','Kent','513-721-8888', 'clark@test.com', 0, 0, 1),
+  (7, 'un', 'pwd', 'Cliff','Notes', '513-555-1212', 'cliff@notes.com', 0, 1, 1),
+  (8, 'andrew', 'pwd', 'Andrew','Mojzer', '513-555-1212', 'am@admin.com', 0, 1, 1),
+  (9, 'luke', 'pwd', 'Luke','Hinegardner', '513-555-1212', 'lh@requestor.com', 1, 0, 1),
+  (10, 'bill', 'pwd', 'Bill','Mandella', '513-555-1212', 'bm@reviewer.com', 1, 0, 1);	
 
 -- insert some rows into the Status table
 INSERT INTO status (description) VALUES
@@ -164,13 +167,17 @@ INSERT INTO `product` (`ID`,`VendorID`,`PartNumber`,`Name`,`Price`,`Unit`,`Photo
 INSERT INTO `product` (`ID`,`VendorID`,`PartNumber`,`Name`,`Price`,`Unit`,`PhotoPath`) VALUES (15,1,'5845332','Boost Mobile - Motorola Moto E4 4G LTE with 16GB Memory Prepaid Cell Phone', 69.99, NULL, NULL);
 INSERT INTO `product` (`ID`,`VendorID`,`PartNumber`,`Name`,`Price`,`Unit`,`PhotoPath`) VALUES (16,6,'AC00RR1','Roadrunner Special Tacks', 19.99, NULL, NULL);
 
-INSERT INTO `purchaserequest` (`ID`,`UserID`,`Description`,`Justification`,`DateNeeded`,`DeliveryMode`,`StatusID`, `Total`, `SubmittedDate`, `ReasonForRejection`, `IsActive`) VALUES (1,8,'Cliff Purchase Request','Ran out of these', '2018-06-30', 'Pickup', 1, 0, '2018-01-17', NULL, 1);
-INSERT INTO `purchaserequest` (`ID`,`UserID`,`Description`,`Justification`,`DateNeeded`,`DeliveryMode`,`StatusID`, `Total`, `SubmittedDate`, `ReasonForRejection`, `IsActive`) VALUES (2,5,'Kara PR','Need for my project', '2018-06-30', 'Fly over', 1, 0, '2018-01-17', NULL, 1);
+INSERT INTO `purchaserequest` (`ID`,`UserID`,`Description`,`Justification`,`DateNeeded`,`DeliveryMode`,`StatusID`, `Total`) VALUES (1,8,'Miscellaneous supplies','Replenishment', '2018-01-30', 'Mail', 1, 0);
+INSERT INTO `purchaserequest` (`ID`,`UserID`,`Description`,`Justification`,`DateNeeded`,`DeliveryMode`,`StatusID`, `Total`) VALUES (2,5,'Workshop supplies','Need for workshop', '2018-01-30', 'Fly over', 1, 0);
+INSERT INTO `purchaserequest` (`ID`,`UserID`,`Description`,`Justification`,`DateNeeded`,`DeliveryMode`,`StatusID`, `Total`) VALUES (3,9,'Office Supplies','Need for desk', '2018-01-30', 'Pickup', 1, 0);
+INSERT INTO `purchaserequest` (`ID`,`UserID`,`Description`,`Justification`,`DateNeeded`,`DeliveryMode`,`StatusID`, `Total`) VALUES (4,10,'New Laptop','Computer is broken', '2018-02-01', 'Pickup', 1, 0);
 
 INSERT INTO `purchaserequestlineitem` (`ID`,`PurchaseRequestID`,`ProductID`,`Quantity`) VALUES (1,1,4,1);
 INSERT INTO `purchaserequestlineitem` (`ID`,`PurchaseRequestID`,`ProductID`,`Quantity`) VALUES (2,1,5,1);
 INSERT INTO `purchaserequestlineitem` (`ID`,`PurchaseRequestID`,`ProductID`,`Quantity`) VALUES (3,1,16,1);
 INSERT INTO `purchaserequestlineitem` (`ID`,`PurchaseRequestID`,`ProductID`,`Quantity`) VALUES (4,2,15,1);
+INSERT INTO `purchaserequestlineitem` (`ID`,`PurchaseRequestID`,`ProductID`,`Quantity`) VALUES (5,3,6,1);
+INSERT INTO `purchaserequestlineitem` (`ID`,`PurchaseRequestID`,`ProductID`,`Quantity`) VALUES (6,4,9,1);
 
 -- create a user and grant privileges to that user
 -- specifically use this user to connect to the database; DBA can see which bootcamper is interacting w DB
